@@ -4,7 +4,6 @@ import { generateHapticFeedback, showFullScreenAd } from "@apps-in-toss/web-fram
 import { ScreenScaffold } from "@/components/ScreenScaffold";
 import { Card } from "@/components/Card";
 import { EmptyState, LoadingState } from "@/components/StateView";
-import { FloatingTabBar } from "@/components/FloatingTabBar";
 import { getRecords, getSettings, getRewardUnlock, setRewardUnlock } from "@/lib/storage";
 import { getTotalDebt, buildRecoveryPlan, getWeekKey, type RecoveryPlanDay } from "@/lib/sleepEngine";
 
@@ -124,15 +123,6 @@ export default function PlanPage() {
       <Spacing size={64} />
 
       <Toast open={adError} position="bottom" text={AD_FAIL_MESSAGE} />
-
-      <FloatingTabBar
-        items={[
-          { label: "홈", path: "/" },
-          { label: "리포트", path: "/report" },
-          { label: "플랜", path: "/plan" },
-          { label: "진단", path: "/diagnosis" },
-        ]}
-      />
     </ScreenScaffold>
   );
 }

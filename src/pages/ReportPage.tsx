@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import { Top, Paragraph, Spacing, Button, Toast } from "@toss/tds-mobile";
+import { Top, Paragraph, Spacing, Button, Toast, Asset } from "@toss/tds-mobile";
 import { generateHapticFeedback, showFullScreenAd } from "@apps-in-toss/web-framework";
 import { ScreenScaffold } from "@/components/ScreenScaffold";
 import { Card } from "@/components/Card";
 import { MiniBar } from "@/components/MiniBar";
 import { EmptyState, LoadingState } from "@/components/StateView";
-import { FloatingTabBar } from "@/components/FloatingTabBar";
 import { getRecords, getRewardUnlock, setRewardUnlock } from "@/lib/storage";
 import { getWeekKey } from "@/lib/sleepEngine";
 import type { SleepRecord } from "@/lib/types";
@@ -117,6 +116,7 @@ export default function ReportPage() {
         <LoadingState rows={4} testId="report-loading" />
       ) : !hasRecords ? (
         <EmptyState
+          icon={<Asset.ContentIcon name="icon-clock" alt="이번 주 기록 없음" />}
           title="이번 주 기록이 없어요"
           description="수면을 기록하면 주간 리포트를 볼 수 있어요"
         />
@@ -157,15 +157,6 @@ export default function ReportPage() {
       <Spacing size={64} />
 
       <Toast open={adError} position="bottom" text={AD_FAIL_MESSAGE} />
-
-      <FloatingTabBar
-        items={[
-          { label: "홈", path: "/" },
-          { label: "리포트", path: "/report" },
-          { label: "플랜", path: "/plan" },
-          { label: "진단", path: "/diagnosis" },
-        ]}
-      />
     </ScreenScaffold>
   );
 }

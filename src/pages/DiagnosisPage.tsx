@@ -4,7 +4,6 @@ import { Top, Paragraph, Spacing, Button, Badge, Chip } from "@toss/tds-mobile";
 import { generateHapticFeedback } from "@apps-in-toss/web-framework";
 import { ScreenScaffold } from "@/components/ScreenScaffold";
 import { Card } from "@/components/Card";
-import { FloatingTabBar } from "@/components/FloatingTabBar";
 import { getItem, setItem, removeItem } from "@/lib/storage";
 import { SDT_KEYS } from "@/lib/types";
 
@@ -210,15 +209,6 @@ export default function DiagnosisPage() {
       )}
 
       <Spacing size={64} />
-
-      <FloatingTabBar
-        items={[
-          { label: "홈", path: "/" },
-          { label: "리포트", path: "/report" },
-          { label: "플랜", path: "/plan" },
-          { label: "진단", path: "/diagnosis" },
-        ]}
-      />
     </ScreenScaffold>
   );
 }

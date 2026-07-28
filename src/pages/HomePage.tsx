@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Top, Paragraph, Spacing, Chip, Button, Toast } from "@toss/tds-mobile";
+import { Top, Paragraph, Spacing, Chip, Button, Toast, Asset } from "@toss/tds-mobile";
 import { generateHapticFeedback } from "@apps-in-toss/web-framework";
 import { ScreenScaffold } from "@/components/ScreenScaffold";
 import { SummaryHero } from "@/components/SummaryHero";
@@ -8,7 +8,6 @@ import { Card } from "@/components/Card";
 import { Sparkline } from "@/components/Sparkline";
 import { EmptyState, LoadingState } from "@/components/StateView";
 import { AdSlot } from "@/components/AdSlot";
-import { FloatingTabBar } from "@/components/FloatingTabBar";
 import { getRecords, getStreak } from "@/lib/storage";
 import { getTotalDebt, getPayoffDays } from "@/lib/sleepEngine";
 import type { RouteState, SleepRecord } from "@/lib/types";
@@ -99,6 +98,7 @@ export default function HomePage() {
         </>
       ) : isEmpty ? (
         <EmptyState
+          icon={<Asset.ContentIcon name="icon-moon" alt="기록 없음" />}
           title="아직 기록이 없어요"
           description="첫 수면을 기록해보세요"
           action={
@@ -148,15 +148,6 @@ export default function HomePage() {
       <Spacing size={64} />
 
       <Toast open={Boolean(routeState?.toast)} position="bottom" text={routeState?.toast ?? ""} />
-
-      <FloatingTabBar
-        items={[
-          { label: "홈", path: "/" },
-          { label: "리포트", path: "/report" },
-          { label: "플랜", path: "/plan" },
-          { label: "진단", path: "/diagnosis" },
-        ]}
-      />
     </ScreenScaffold>
   );
 }
