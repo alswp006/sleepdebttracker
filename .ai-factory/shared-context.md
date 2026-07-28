@@ -22,6 +22,8 @@ export interface UserSettings {
   notificationEnabled: boolean;
   darkModeEnabled: boolean;
   updatedAt: number;
+  // 첫 진입 안내 완료 시각(ms). null/undefined면 아직 안내를 보지 않음.
+  onboardedAt?: number | null;
 }
 
 // Entity: Sleep streak tracking
@@ -141,3 +143,4 @@ CRITICAL: Before creating any new function, type, or component, check the list a
 - 0007: 홈 대시보드 /  (+ 배너 광고) (files: src/pages/HomePage.tsx)
 - 0008: 주간 리포트 페이지 /report (리워드 게이트) (files: src/pages/ReportPage.tsx)
 - 0009: 회복 플랜 페이지 /plan (리워드 게이트) (files: src/pages/PlanPage.tsx)
+- 0012: AI 미사용 고지 · 검수 컴플라이언스 폴리시 (files: src/components/OnboardingNotice.tsx, src/App.tsx)
