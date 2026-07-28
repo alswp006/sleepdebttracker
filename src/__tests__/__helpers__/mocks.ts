@@ -140,6 +140,24 @@ export function mockTds() {
     BottomCTA: ({ children }: any) =>
       React.createElement("div", { "data-slot": "bottom-cta" }, children),
 
+    // FixedBottomCTA IS a <button> itself (.d.ts: HTMLButtonElement ref) — do not
+    // nest another <button>/<Button> inside it in page code.
+    FixedBottomCTA: React.forwardRef(
+      ({ children, onClick, disabled, loading, ...props }: any, ref: any) =>
+        React.createElement(
+          "button",
+          {
+            ref,
+            onClick,
+            disabled: disabled || loading,
+            "data-loading": loading ? "true" : undefined,
+            "data-slot": "fixed-bottom-cta",
+            ...props,
+          },
+          children,
+        ),
+    ),
+
     BottomSheet: Object.assign(
       ({ children, open }: any) =>
         open ? React.createElement("div", { role: "dialog" }, children) : null,
