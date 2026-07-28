@@ -169,3 +169,4 @@ CRITICAL: Before creating any new function, type, or component, check the list a
 - 0004: 스트릭 체크인 로직 + useSleepStore 상태 훅 (files: src/lib/streak.ts, src/lib/useSleepStore.ts)
 - 0005: 공통 ScreenScaffold 레이아웃 컴포넌트 (files: src/components/ScreenScaffold.tsx)
 - heal-1-02: useSleepStore 상태 훅 + 스트릭 로직 병합(0004) (files: src/hooks/useSleepStore.ts, src/store/streak.ts)
+- heal-1-01: 단일 라우팅/Provider 진입점으로 통합 (files: src/App.tsx, src/main.tsx, src/routes/index.tsx, src/components/FloatingTabBar.tsx)

@@ -128,10 +128,12 @@ export function mockTds() {
         React.createElement(
           "nav",
           { role: "navigation" },
-          title && React.createElement("h1", null, title),
+          title,
           children,
         ),
       {
+        // TitleParagraph already renders the <h1> — Top must not wrap it in
+        // another one (that produced an <h1><h1> validateDOMNesting warning).
         TitleParagraph: ({ children }: any) => React.createElement("h1", null, children),
       },
     ),
