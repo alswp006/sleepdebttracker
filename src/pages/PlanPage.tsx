@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Top, Paragraph, Spacing, Button, Asset, Badge, Toast } from "@toss/tds-mobile";
+import { Top, Paragraph, Spacing, Button, Badge, Toast, Asset } from "@toss/tds-mobile";
 import { generateHapticFeedback, showFullScreenAd } from "@apps-in-toss/web-framework";
 import { ScreenScaffold } from "@/components/ScreenScaffold";
 import { Card } from "@/components/Card";

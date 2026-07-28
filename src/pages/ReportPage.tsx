@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Top, Paragraph, Spacing, Button, Asset, Toast } from "@toss/tds-mobile";
+import { Top, Paragraph, Spacing, Button, Toast } from "@toss/tds-mobile";
 import { generateHapticFeedback, showFullScreenAd } from "@apps-in-toss/web-framework";
 import { ScreenScaffold } from "@/components/ScreenScaffold";
 import { Card } from "@/components/Card";
@@ -117,7 +117,6 @@ export default function ReportPage() {
         <LoadingState rows={4} testId="report-loading" />
       ) : !hasRecords ? (
         <EmptyState
-          icon={<Asset.ContentIcon name="icon-sleep" alt="이번 주 기록 없음" />}
           title="이번 주 기록이 없어요"
           description="수면을 기록하면 주간 리포트를 볼 수 있어요"
         />

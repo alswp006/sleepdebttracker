@@ -82,7 +82,10 @@ export const SDT_KEYS = {
 
 ## Existing Codebase (import and use these — do NOT recreate)
 ### File Tree (src/)
+  **/
   App.tsx
+  __probe.tsx
+  __rrcheck.ts
   components/
     AdSlot.tsx
     Amount.tsx
@@ -91,6 +94,7 @@ export const SDT_KEYS = {
     CountUp.tsx
     FloatingTabBar.tsx
     MiniBar.tsx
+    OnboardingNotice.tsx
     PageShell.tsx
     ScreenScaffold.tsx
     Sparkline.tsx
@@ -98,14 +102,21 @@ export const SDT_KEYS = {
     SummaryHero.tsx
     TossPurchase.tsx
     TossRewardAd.tsx
+    __zzDebugProbe.tsx
   hooks/
   lib/
+    sleepEngine.ts
     storage.ts
     types.ts
     utils.ts
   main.tsx
   pages/
+    DiagnosisPage.tsx
     Home.tsx
+    HomePage.tsx
+    InputPage.tsx
+    PlanPage.tsx
+    ReportPage.tsx
     __TdsGallery.tsx
   styles/
     globals.css
@@ -114,7 +125,8 @@ export const SDT_KEYS = {
   vite-env.d.ts
 
 ### Exports (src/lib/)
-- storage.ts: export function getItem<T>(key: string): T | null; export function setItem<T>(key: string, value: T): void; export function removeItem(key: string): void
+- sleepEngine.ts: export function computeSleep( times:; export function getTotalDebt(records: Array<; export function getPayoffDays(totalDebt: number, recoveryRatePerDay: number): number; export interface RecoveryPlanDay; export interface RecoveryPlanResult; export function buildRecoveryPlan(config:; export function getWeekKey(dateISO: string): string
+- storage.ts: export function getItem<T>(key: string): T | null; export function setItem<T>(key: string, value: T): void; export function removeItem(key: string): void; export function getRecords(): Record<string, SleepRecord>; export function setRecords(records: Record<string, SleepRecord>): SetOutcome; export function saveRecord( input:; export function getSettings(): UserSettings | null; export function setSettings(settings: UserSettings): SetOutcome
 - types.ts: export interface SleepRecord; export interface UserSettings; export interface StreakState; export interface ChronotypeResult; export interface ComputeResult; export interface RecoveryPlan; export type SaveResult<T> =; export type RouteState =
 - utils.ts: export function cn(...classes: (string | boolean | undefined | null)[]): string; export function formatNumber(n: number): string; export function formatCurrency(n: number, currency = 'KRW'): string
 
@@ -126,6 +138,7 @@ export const SDT_KEYS = {
 - CountUp.tsx: CountUp
 - FloatingTabBar.tsx: FloatingTabBar
 - MiniBar.tsx: MiniBar
+- OnboardingNotice.tsx: OnboardingNotice
 - PageShell.tsx: PageShell
 - ScreenScaffold.tsx: ScreenScaffold
 - Sparkline.tsx: Sparkline
@@ -133,6 +146,15 @@ export const SDT_KEYS = {
 - SummaryHero.tsx: SummaryHero
 - TossPurchase.tsx: TossPurchase
 - TossRewardAd.tsx: TossRewardAd
+- __zzDebugProbe.tsx: DebugProbe, DebugProbeLog
+
+### Module Dependencies (import graph)
+  lib/storage.ts → imports: lib/types, lib/types
+  pages/DiagnosisPage.tsx → imports: components/ScreenScaffold, components/Card, components/FloatingTabBar, lib/storage, lib/types
+  pages/HomePage.tsx → imports: components/ScreenScaffold, components/SummaryHero, components/Card, components/Sparkline, components/StateView, components/AdSlot, components/FloatingTabBar, lib/storage, lib/sleepEngine, lib/types
+  pages/InputPage.tsx → imports: components/ScreenScaffold, components/BottomCTA, lib/storage, lib/sleepEngine, lib/types
+  pages/PlanPage.tsx → imports: components/ScreenScaffold, components/Card, components/StateView, components/FloatingTabBar, lib/storage, lib/sleepEngine
+  pages/ReportPage.tsx → imports: components/ScreenScaffold, components/Card, components/MiniBar, components/StateView, components/FloatingTabBar, lib/storage, lib/sleepEngine, lib/types
 CRITICAL: Before creating any new function, type, or component, check the list above. If something similar exists, import and use it.
 
 ## Already Implemented (do NOT duplicate or overwrite)
@@ -144,3 +166,6 @@ CRITICAL: Before creating any new function, type, or component, check the list a
 - 0008: 주간 리포트 페이지 /report (리워드 게이트) (files: src/pages/ReportPage.tsx)
 - 0009: 회복 플랜 페이지 /plan (리워드 게이트) (files: src/pages/PlanPage.tsx)
 - 0012: AI 미사용 고지 · 검수 컴플라이언스 폴리시 (files: src/components/OnboardingNotice.tsx, src/App.tsx)
+- 0004: 스트릭 체크인 로직 + useSleepStore 상태 훅 (files: src/lib/streak.ts, src/lib/useSleepStore.ts)
+- 0005: 공통 ScreenScaffold 레이아웃 컴포넌트 (files: src/components/ScreenScaffold.tsx)
+- heal-1-02: useSleepStore 상태 훅 + 스트릭 로직 병합(0004) (files: src/hooks/useSleepStore.ts, src/store/streak.ts)

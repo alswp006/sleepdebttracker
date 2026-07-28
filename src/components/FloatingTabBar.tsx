@@ -21,6 +21,7 @@ export type TabItem = {
 export function FloatingTabBar({ items }: { items: TabItem[] }) {
   const navigate = useNavigate();
   const location = useLocation();
+  console.log("FTB DEBUG location=", location, "items=", items.map((i) => i.path));
 
   return (
     <nav

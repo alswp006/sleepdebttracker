@@ -2,13 +2,8 @@ import { describe, it, expect } from "vitest";
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import {
-  mockTds,
-  mockAppsInToss,
-  mockRouter,
-  mockNavigate,
-  mockLocation,
-} from "@/__tests__/__helpers__/mocks";
+import { mockTds, mockAppsInToss } from "@/__tests__/__helpers__/mocks";
+import { mockRouter, mockNavigate, mockLocation } from "@/__tests__/__helpers__/mocks-router";
 import { seedLocalStorage } from "@/__tests__/__helpers__/test-utils";
 import { SDT_KEYS } from "@/lib/types";
 import type { SleepRecord, StreakState } from "@/lib/types";

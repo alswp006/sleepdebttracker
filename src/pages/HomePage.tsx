@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Top, Paragraph, Spacing, Chip, Button, Asset, Toast } from "@toss/tds-mobile";
+import { Top, Paragraph, Spacing, Chip, Button, Toast } from "@toss/tds-mobile";
 import { generateHapticFeedback } from "@apps-in-toss/web-framework";
 import { ScreenScaffold } from "@/components/ScreenScaffold";
 import { SummaryHero } from "@/components/SummaryHero";
@@ -99,7 +99,6 @@ export default function HomePage() {
         </>
       ) : isEmpty ? (
         <EmptyState
-          icon={<Asset.ContentIcon name="icon-sleep" alt="빈 기록" />}
           title="아직 기록이 없어요"
           description="첫 수면을 기록해보세요"
           action={

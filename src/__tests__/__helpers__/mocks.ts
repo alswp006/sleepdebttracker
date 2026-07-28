@@ -2,21 +2,21 @@
  * Shared test mocks for Toss Mini App packets.
  *
  * Usage at the top of any test file:
- *   import { mockTds, mockAppsInToss, mockRouter } from "@/__tests__/__helpers__/mocks";
+ *   import { mockTds, mockAppsInToss } from "@/__tests__/__helpers__/mocks";
  *   mockTds();
  *   mockAppsInToss();
- *   mockRouter();
  *
- * Or use all at once:
+ * Or use all at once (TDS + SDK + TossRewardAd, real react-router-dom):
  *   import { mockAll } from "@/__tests__/__helpers__/mocks";
  *   mockAll();
+ *
+ * Need a static/spy-able useNavigate + useLocation instead of real routing?
+ * Import mockRouter/mockNavigate/mockLocation from "./mocks-router" (kept in
+ * its own file on purpose — see that file's doc comment).
  */
 
 import React from "react";
 import { vi } from "vitest";
-
-export const mockNavigate = vi.fn();
-export const mockLocation = { pathname: "/", search: "", state: null, key: "default" };
 
 // ── TDS (@toss/tds-mobile) ──
 // TDS components use CSS-in-JS + layout hooks that crash in jsdom.
@@ -315,24 +315,17 @@ export function mockTossRewardAd() {
 }
 
 // ── react-router-dom ──
-// Preserve actual router + override useNavigate for assertion.
-export function mockRouter() {
-  vi.mock("react-router-dom", async () => {
-    const actual = await vi.importActual<typeof import("react-router-dom")>(
-      "react-router-dom",
-    );
-    return {
-      ...actual,
-      useNavigate: () => mockNavigate,
-      useLocation: () => mockLocation,
-    };
-  });
-}
+// NOTE: intentionally NOT mocked here — see mocks-router.ts for why (and
+// import mockRouter/mockNavigate/mockLocation from that file, not this one).
 
-// ── Convenience: mock everything ──
+// ── Convenience: mock everything except react-router-dom ──
+// Does NOT include the router mock (see mocks-router.ts) — real routing is
+// preserved so <Routes>/<Route> matching and FloatingTabBar active-tab
+// detection work. If a test wants the static useNavigate/useLocation mock,
+// import mockRouter from "@/__tests__/__helpers__/mocks-router" and call it
+// alongside mockAll().
 export function mockAll() {
   mockTds();
   mockAppsInToss();
   mockTossRewardAd();
-  mockRouter();
 }

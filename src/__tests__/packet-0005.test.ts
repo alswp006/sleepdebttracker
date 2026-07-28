@@ -5,7 +5,8 @@ import path from "node:path";
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { mockTds, mockAppsInToss, mockRouter } from "@/__tests__/__helpers__/mocks";
+import { mockTds, mockAppsInToss } from "@/__tests__/__helpers__/mocks";
+import { mockRouter } from "@/__tests__/__helpers__/mocks-router";
 
 // ============================================================================
 // IMPORTANT: These are TDD red-phase tests. They define expected behavior for
