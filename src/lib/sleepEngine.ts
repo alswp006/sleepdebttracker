@@ -6,6 +6,22 @@ import type { ComputeResult } from "./types";
 // 모든 함수는 NaN/음수 입력을 0으로 클램프하며 절대 NaN을 저장하지 않는다.
 // ============================================================================
 
+function clampNonNegative(n: number): number {
+  return Number.isFinite(n) && n > 0 ? n : 0;
+}
+
+function parseTimeToMinutes(hhmm: string): number {
+  const [h, m] = hhmm.split(":").map(Number);
+  return h * 60 + m;
+}
+
+function formatMinutesToTime(totalMinutes: number): string {
+  const normalized = ((totalMinutes % 1440) + 1440) % 1440;
+  const h = Math.floor(normalized / 60);
+  const m = normalized % 60;
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+}
+
 /**
  * AC-1 (F1-AC1): 기본 수면 시간 계산
  * Given targetMinutes = 480 (8시간)
@@ -13,9 +29,6 @@ import type { ComputeResult } from "./types";
  * Then sleepMinutes = 420 (7시간), debtMinutes = 60 반환
  *
  * AC-2 (F1-AC2): 자정 교차 처리
- * Given 취침이 기상보다 늦은 값 (예: 01:00 ~ 07:00 또는 22:00 ~ 05:00)
- * When computeSleep({ bedTime: "22:00", wakeTime: "05:00" }) 호출
- * Then wakeTime을 익일로 처리해 sleepMinutes = 420 반환
  * Spec: "기상 < 취침"이면 익일 기상으로 간주해 +1440분 처리
  *
  * @param times - { bedTime: "HH:mm", wakeTime: "HH:mm" }
@@ -26,8 +39,15 @@ export function computeSleep(
   times: { bedTime: string; wakeTime: string },
   targetMinutes: number
 ): ComputeResult {
-  // TODO: Implement
-  return { sleepMinutes: 0, debtMinutes: 0 };
+  const bed = parseTimeToMinutes(times.bedTime);
+  let wake = parseTimeToMinutes(times.wakeTime);
+  if (wake < bed) {
+    wake += 1440;
+  }
+  const sleepMinutes = clampNonNegative(wake - bed);
+  const target = clampNonNegative(targetMinutes);
+  const debtMinutes = clampNonNegative(target - sleepMinutes);
+  return { sleepMinutes, debtMinutes };
 }
 
 /**
@@ -41,8 +61,8 @@ export function computeSleep(
  * @returns number - 누적 부채(분), 최소 0
  */
 export function getTotalDebt(records: Array<{ debtMinutes: number }>): number {
-  // TODO: Implement
-  return 0;
+  const sum = records.reduce((acc, r) => acc + (Number.isFinite(r.debtMinutes) ? r.debtMinutes : 0), 0);
+  return clampNonNegative(sum);
 }
 
 /**
@@ -57,8 +77,10 @@ export function getTotalDebt(records: Array<{ debtMinutes: number }>): number {
  * @returns number - 상환 예상일, 최소 0
  */
 export function getPayoffDays(totalDebt: number, recoveryRatePerDay: number): number {
-  // TODO: Implement
-  return 0;
+  const debt = clampNonNegative(totalDebt);
+  const rate = clampNonNegative(recoveryRatePerDay);
+  if (debt === 0 || rate === 0) return 0;
+  return Math.ceil(debt / rate);
 }
 
 export interface RecoveryPlanDay {
@@ -71,6 +93,11 @@ export interface RecoveryPlanDay {
 export interface RecoveryPlanResult {
   days: RecoveryPlanDay[];
 }
+
+const RECOVERY_DAYS = ["Saturday", "Sunday"] as const;
+const RECOVERY_CAP_TOTAL = 240;
+const RECOVERY_CAP_PER_DAY = 120;
+const DEFAULT_SLEEP_SPAN_MINUTES = 480;
 
 /**
  * F5-AC1: 회복 플랜 계산
@@ -87,8 +114,24 @@ export function buildRecoveryPlan(config: {
   totalDebt: number;
   targetBedTime: string;
 }): RecoveryPlanResult {
-  // TODO: Implement
-  return { days: [] };
+  const debt = clampNonNegative(config.totalDebt);
+  const totalRecovery = Math.min(debt, RECOVERY_CAP_TOTAL);
+  const firstDayMinutes = Math.min(RECOVERY_CAP_PER_DAY, Math.ceil(totalRecovery / 2));
+  const secondDayMinutes = Math.min(RECOVERY_CAP_PER_DAY, totalRecovery - firstDayMinutes);
+  const perDayMinutes = [firstDayMinutes, secondDayMinutes];
+  const targetBed = parseTimeToMinutes(config.targetBedTime);
+
+  const days: RecoveryPlanDay[] = RECOVERY_DAYS.map((dayOfWeek, i) => {
+    const additionalMinutes = perDayMinutes[i];
+    return {
+      dayOfWeek,
+      recommendedBedTime: formatMinutesToTime(targetBed - additionalMinutes),
+      recommendedWakeTime: formatMinutesToTime(targetBed + DEFAULT_SLEEP_SPAN_MINUTES),
+      additionalMinutes,
+    };
+  });
+
+  return { days };
 }
 
 /**
@@ -102,6 +145,14 @@ export function buildRecoveryPlan(config: {
  * @returns string - ISO 주키 "YYYY-Www" 형식
  */
 export function getWeekKey(dateISO: string): string {
-  // TODO: Implement
-  return "";
+  const [y, m, d] = dateISO.split("-").map(Number);
+  const date = new Date(Date.UTC(y, m - 1, d));
+
+  // ISO 8601: 목요일이 속한 연도가 해당 주의 연도, 월요일이 주의 시작
+  const dayNum = (date.getUTCDay() + 6) % 7; // 0 = Monday
+  date.setUTCDate(date.getUTCDate() - dayNum + 3); // 이번 주 목요일로 이동
+  const isoYearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+  const weekNumber = Math.ceil(((date.getTime() - isoYearStart.getTime()) / 86400000 + 1) / 7);
+
+  return `${date.getUTCFullYear()}-W${String(weekNumber).padStart(2, "0")}`;
 }
