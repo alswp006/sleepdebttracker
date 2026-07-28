@@ -70,9 +70,11 @@ describe("localStorage 안전 CRUD 저장소 유틸 (packet-0002)", () => {
 
   it("AC-2a: setRecords returns {ok:false,error:'STORAGE_FULL'} on QuotaExceededError", () => {
     // Arrange: Mock localStorage.setItem to throw QuotaExceededError
-    const originalSetItem = localStorage.setItem;
+    // (jsdom's Storage is a legacy platform object — direct assignment to
+    // `localStorage.setItem` is swallowed as a named-property set rather than
+    // overriding the method, so the prototype must be spied on instead.)
     const error = new DOMException("QuotaExceededError", "QuotaExceededError");
-    localStorage.setItem = vi.fn(() => {
+    const spy = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
       throw error;
     });
 
@@ -83,14 +85,13 @@ describe("localStorage 안전 CRUD 저장소 유틸 (packet-0002)", () => {
     expect(result).toEqual({ ok: false, error: "STORAGE_FULL" });
 
     // Cleanup
-    localStorage.setItem = originalSetItem;
+    spy.mockRestore();
   });
 
   it("AC-2b: setRecords does not throw on QuotaExceededError", () => {
     // Arrange
-    const originalSetItem = localStorage.setItem;
     const error = new DOMException("QuotaExceededError", "QuotaExceededError");
-    localStorage.setItem = vi.fn(() => {
+    const spy = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
       throw error;
     });
 
@@ -98,7 +99,7 @@ describe("localStorage 안전 CRUD 저장소 유틸 (packet-0002)", () => {
     expect(() => setRecords({})).not.toThrow();
 
     // Cleanup
-    localStorage.setItem = originalSetItem;
+    spy.mockRestore();
   });
 
 

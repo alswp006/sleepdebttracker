@@ -16,9 +16,12 @@ export interface SleepRecord {
 
 // Entity: User preferences
 export interface UserSettings {
-  targetMinutes: number;
-  recoveryRatePerDay: number;
-  onboardedAt: number | null;
+  targetSleepMinutes: number;
+  targetBedTime: string;
+  targetWakeTime: string;
+  notificationEnabled: boolean;
+  darkModeEnabled: boolean;
+  updatedAt: number;
 }
 
 // Entity: Sleep streak tracking
@@ -129,3 +132,6 @@ export const SDT_KEYS = {
 - TossPurchase.tsx: TossPurchase
 - TossRewardAd.tsx: TossRewardAd
 CRITICAL: Before creating any new function, type, or component, check the list above. If something similar exists, import and use it.
+
+## Already Implemented (do NOT duplicate or overwrite)
+- 0001: 엔티티 타입 · RouteState · 키 상수 정의 (files: src/lib/types.ts)

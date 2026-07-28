@@ -1,4 +1,10 @@
-import type { SleepRecord, StreakState, SDT_KEYS } from "@/lib/types";
+import type {
+  SleepRecord,
+  UserSettings,
+  StreakState,
+  ChronotypeResult,
+} from "@/lib/types";
+import { SDT_KEYS } from "@/lib/types";
 
 // ============================================================================
 // Generic key-value helpers
@@ -22,7 +28,40 @@ export function removeItem(key: string): void {
 }
 
 // ============================================================================
-// Packet-0002: Entity-specific CRUD operations with safety guards
+// Internal helpers
+// ============================================================================
+
+type SetOutcome = { ok: true } | { ok: false; error: "STORAGE_FULL" };
+
+function safeSet<T>(key: string, value: T): SetOutcome {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+    return { ok: true };
+  } catch {
+    return { ok: false, error: "STORAGE_FULL" };
+  }
+}
+
+function safeGet<T>(key: string, fallback: T): T {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return fallback;
+    return JSON.parse(raw) as T;
+  } catch {
+    return fallback;
+  }
+}
+
+function computeSleepMinutes(bedTime: string, wakeTime: string): number {
+  const [bedH, bedM] = bedTime.split(":").map(Number);
+  const [wakeH, wakeM] = wakeTime.split(":").map(Number);
+  const bedTotal = bedH * 60 + bedM;
+  const wakeTotal = wakeH * 60 + wakeM;
+  return wakeTotal > bedTotal ? wakeTotal - bedTotal : 24 * 60 - bedTotal + wakeTotal;
+}
+
+// ============================================================================
+// Records (sdt.records.v1)
 // ============================================================================
 
 /**
@@ -30,18 +69,14 @@ export function removeItem(key: string): void {
  * No console.error logging.
  */
 export function getRecords(): Record<string, SleepRecord> {
-  // TODO: Implement
-  throw new Error("Not implemented");
+  return safeGet<Record<string, SleepRecord>>(SDT_KEYS.records, {});
 }
 
 /**
  * AC-2 (F1-AC5): Handle QuotaExceededError without throwing
  */
-export function setRecords(
-  records: Record<string, SleepRecord>
-): { ok: true } | { ok: false; error: "STORAGE_FULL" } {
-  // TODO: Implement
-  throw new Error("Not implemented");
+export function setRecords(records: Record<string, SleepRecord>): SetOutcome {
+  return safeSet(SDT_KEYS.records, records);
 }
 
 /**
@@ -51,10 +86,42 @@ export function setRecords(
 export function saveRecord(
   input: { id: string; bedTime: string; wakeTime: string },
   targetMinutes: number
-): { ok: true } | { ok: false; error: "STORAGE_FULL" } {
-  // TODO: Implement
-  throw new Error("Not implemented");
+): SetOutcome {
+  const records = getRecords();
+  const existing = records[input.id];
+  const sleepMinutes = computeSleepMinutes(input.bedTime, input.wakeTime);
+  const debtMinutes = targetMinutes - sleepMinutes;
+  const now = Date.now();
+
+  const record: SleepRecord = {
+    id: input.id,
+    bedTime: input.bedTime,
+    wakeTime: input.wakeTime,
+    sleepMinutes,
+    debtMinutes,
+    createdAt: existing?.createdAt ?? now,
+    updatedAt: now,
+  };
+
+  records[input.id] = record;
+  return setRecords(records);
 }
+
+// ============================================================================
+// Settings (sdt.settings.v1)
+// ============================================================================
+
+export function getSettings(): UserSettings | null {
+  return safeGet<UserSettings | null>(SDT_KEYS.settings, null);
+}
+
+export function setSettings(settings: UserSettings): SetOutcome {
+  return safeSet(SDT_KEYS.settings, settings);
+}
+
+// ============================================================================
+// Streak (sdt.streak.v1)
+// ============================================================================
 
 /**
  * AC-4 (F6-AC6): Return default streak when key is missing
@@ -64,14 +131,46 @@ export function getStreak(): {
   longestStreak: number;
   lastCheckInDate: string | null;
 } {
-  // TODO: Implement
-  throw new Error("Not implemented");
+  const stored = safeGet<StreakState | null>(SDT_KEYS.streak, null);
+  if (!stored) {
+    return { currentStreak: 0, longestStreak: 0, lastCheckInDate: null };
+  }
+  return {
+    currentStreak: stored.currentStreak,
+    longestStreak: stored.longestStreak,
+    lastCheckInDate: stored.lastRecordDate ?? null,
+  };
 }
 
-/**
- * Streak setter
- */
-export function setStreak(streak: StreakState): void {
-  // TODO: Implement
-  throw new Error("Not implemented");
+export function setStreak(streak: StreakState): SetOutcome {
+  return safeSet(SDT_KEYS.streak, streak);
+}
+
+// ============================================================================
+// Chronotype (sdt.chronotype.v1)
+// ============================================================================
+
+export function getChronotype(): ChronotypeResult | null {
+  return safeGet<ChronotypeResult | null>(SDT_KEYS.chronotype, null);
+}
+
+export function setChronotype(chronotype: ChronotypeResult | null): SetOutcome {
+  return safeSet(SDT_KEYS.chronotype, chronotype);
+}
+
+// ============================================================================
+// Reward unlock (sdt.rewardUnlock.v1)
+// ============================================================================
+
+export type RewardUnlockState = { report: string | null; plan: string | null };
+
+export function getRewardUnlock(): RewardUnlockState {
+  return safeGet<RewardUnlockState>(SDT_KEYS.rewardUnlock, {
+    report: null,
+    plan: null,
+  });
+}
+
+export function setRewardUnlock(state: RewardUnlockState): SetOutcome {
+  return safeSet(SDT_KEYS.rewardUnlock, state);
 }
