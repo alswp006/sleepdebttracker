@@ -138,3 +138,4 @@ CRITICAL: Before creating any new function, type, or component, check the list a
 - 0002: localStorage 안전 CRUD 저장소 유틸 (files: src/lib/storage.ts)
 - 0003: 수면 부채 계산 엔진 + ISO 주키 유틸 (files: src/lib/sleepEngine.ts)
 - 0006: 일일 수면 입력 페이지 /input (files: src/pages/InputPage.tsx)
+- 0007: 홈 대시보드 /  (+ 배너 광고) (files: src/pages/HomePage.tsx)
