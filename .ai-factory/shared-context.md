@@ -140,3 +140,4 @@ CRITICAL: Before creating any new function, type, or component, check the list a
 - 0006: 일일 수면 입력 페이지 /input (files: src/pages/InputPage.tsx)
 - 0007: 홈 대시보드 /  (+ 배너 광고) (files: src/pages/HomePage.tsx)
 - 0008: 주간 리포트 페이지 /report (리워드 게이트) (files: src/pages/ReportPage.tsx)
+- 0009: 회복 플랜 페이지 /plan (리워드 게이트) (files: src/pages/PlanPage.tsx)
