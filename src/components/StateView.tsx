@@ -54,7 +54,7 @@ export function EmptyState({
 }
 
 /**
- * 로딩 상태 — TDS Skeleton n줄. 맨텍스트 "불러오는 중" 금지.
+ * 로딩 상태 — TDS Skeleton n줄.
  *
  * Pre-built (재구현 금지): 데이터 패칭 중 표시 → 도착 시 실제 컴포넌트로 교체.
  */
