@@ -5,6 +5,7 @@ import InputPage from './pages/InputPage';
 import ReportPage from './pages/ReportPage';
 import PlanPage from './pages/PlanPage';
 import DiagnosisPage from './pages/DiagnosisPage';
+import OnboardingNotice from './components/OnboardingNotice';
 
 // Dev-only TDS Gallery route — `import.meta.env.DEV` is statically replaced
 // (true in dev, false in prod) so the entire import + Route is tree-shaken
@@ -15,8 +16,10 @@ const DevTdsGallery = import.meta.env.DEV
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
+    <>
+      <OnboardingNotice />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
       <Route path="/input" element={<InputPage />} />
       <Route path="/report" element={<ReportPage />} />
       <Route path="/plan" element={<PlanPage />} />
@@ -31,6 +34,7 @@ export default function App() {
           }
         />
       )}
-    </Routes>
+      </Routes>
+    </>
   );
 }

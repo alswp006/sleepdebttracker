@@ -58,8 +58,9 @@ export function mockTds() {
               { role: "alertdialog", "aria-label": title },
               React.createElement("h2", null, title),
               React.createElement("p", null, description),
-              alertButton,
+              // 실제 TDS는 닫기(취소)를 좌측(alertButton보다 먼저)에 렌더한다.
               React.createElement("button", { onClick: onClose, "aria-label": "닫기" }, "닫기"),
+              alertButton,
             )
           : null,
       {

@@ -17,6 +17,8 @@ export interface UserSettings {
   notificationEnabled: boolean;
   darkModeEnabled: boolean;
   updatedAt: number;
+  // 첫 진입 안내 완료 시각(ms). null/undefined면 아직 안내를 보지 않음.
+  onboardedAt?: number | null;
 }
 
 // Entity: Sleep streak tracking
