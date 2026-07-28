@@ -32,7 +32,6 @@ mockTds();
 mockAppsInToss();
 mockRouter();
 
-// @ts-expect-error — TDD red phase: src/pages/ReportPage.tsx not implemented yet (Coder writes this next)
 const { default: ReportPage } = await import("@/pages/ReportPage");
 const { loadFullScreenAd, showFullScreenAd } = await import(
   "@apps-in-toss/web-framework"
