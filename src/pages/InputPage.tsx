@@ -4,7 +4,7 @@ import { Top, TextField, Spacing, AlertDialog, Toast } from "@toss/tds-mobile";
 import { generateHapticFeedback } from "@apps-in-toss/web-framework";
 import { ScreenScaffold } from "@/components/ScreenScaffold";
 import { SubmitFooter } from "@/components/BottomCTA";
-import { saveRecord } from "@/lib/storage";
+import { saveRecord, checkInStreak } from "@/lib/storage";
 import { computeSleep } from "@/lib/sleepEngine";
 import type { RouteState } from "@/lib/types";
 
@@ -43,6 +43,7 @@ export default function InputPage() {
   function persist() {
     setSaving(true);
     saveRecord({ id: date, bedTime, wakeTime }, TARGET_SLEEP_MINUTES);
+    checkInStreak(date);
     setToastOpen(true);
     navigate("/", { state: { toast: "기록이 저장됐어요" } });
   }

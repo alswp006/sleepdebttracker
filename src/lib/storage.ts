@@ -143,6 +143,47 @@ export function setStreak(streak: StreakState): SetOutcome {
   return safeSet(SDT_KEYS.streak, streak);
 }
 
+function isNextCalendarDay(prevDateISO: string, dateISO: string): boolean {
+  const [py, pm, pd] = prevDateISO.split("-").map(Number);
+  const [y, m, d] = dateISO.split("-").map(Number);
+  const prev = Date.UTC(py, pm - 1, pd);
+  const cur = Date.UTC(y, m - 1, d);
+  return cur - prev === 24 * 60 * 60 * 1000;
+}
+
+/**
+ * F6-AC1/AC2/AC3/AC4: 기록 저장 시 연속 체크인 스트릭을 갱신한다.
+ * - 전날 체크인이면 currentStreak +1, 하루라도 건너뛰면 1로 리셋
+ * - 같은 날 재저장은 변동 없음(중복 카운트 방지)
+ * - longestStreak는 currentStreak가 갱신될 때만 따라 갱신
+ */
+export function checkInStreak(dateISO: string): {
+  currentStreak: number;
+  longestStreak: number;
+  lastCheckInDate: string | null;
+} {
+  const current = getStreak();
+
+  if (current.lastCheckInDate === dateISO) {
+    return current;
+  }
+
+  const currentStreak =
+    current.lastCheckInDate !== null && isNextCalendarDay(current.lastCheckInDate, dateISO)
+      ? current.currentStreak + 1
+      : 1;
+  const longestStreak = Math.max(current.longestStreak, currentStreak);
+
+  setStreak({
+    currentStreak,
+    longestStreak,
+    lastRecordDate: dateISO,
+    updatedAt: Date.now(),
+  });
+
+  return { currentStreak, longestStreak, lastCheckInDate: dateISO };
+}
+
 // ============================================================================
 // Chronotype (sdt.chronotype.v1)
 // ============================================================================
