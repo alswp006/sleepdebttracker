@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
-import Home from './pages/Home';
+import HomePage from './pages/HomePage';
 import InputPage from './pages/InputPage';
 
 // Dev-only TDS Gallery route — `import.meta.env.DEV` is statically replaced
@@ -13,7 +13,7 @@ const DevTdsGallery = import.meta.env.DEV
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<HomePage />} />
       <Route path="/input" element={<InputPage />} />
       {DevTdsGallery && (
         <Route

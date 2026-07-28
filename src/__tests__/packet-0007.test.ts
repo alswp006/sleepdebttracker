@@ -36,7 +36,6 @@ mockTds();
 mockAppsInToss();
 mockRouter();
 
-// @ts-expect-error — TDD red phase: src/pages/HomePage.tsx not implemented yet (Coder writes this next)
 const { default: HomePage } = await import("@/pages/HomePage");
 
 function todayISO(): string {
