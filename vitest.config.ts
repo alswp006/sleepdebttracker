@@ -7,15 +7,12 @@ export default defineConfig({
     // 파일마다 다른 빌드를 물어오면 Router 컨텍스트 인스턴스가 둘로 쪼개져(테스트의 MemoryRouter와
     // 컴포넌트의 useLocation이 서로 다른 컨텍스트를 봄) 실제 라우팅/활성 탭 테스트가 조용히 깨진다.
     // 세 specifier를 모두 ESM 빌드 하나로 고정해 단일 인스턴스(단일 LocationContext)를 보장한다.
+    dedupe: ['react', 'react-dom', 'react-router', 'react-router-dom'],
     alias: [
       { find: '@', replacement: path.resolve(__dirname, './src') },
       {
         find: /^react-router-dom$/,
-        replacement: path.resolve(__dirname, './node_modules/react-router-dom/dist/index.mjs'),
-      },
-      {
-        find: /^react-router\/dom$/,
-        replacement: path.resolve(__dirname, './node_modules/react-router/dist/development/dom-export.mjs'),
+        replacement: path.resolve(__dirname, './node_modules/react-router/dist/development/index.mjs'),
       },
       {
         find: /^react-router$/,
@@ -37,6 +34,6 @@ export default defineConfig({
     poolOptions: { forks: { minForks: 1, maxForks: 2 } },
     // 위 alias(ESM 고정)와 짝: .mjs 내부의 react-router(/dom) bare import까지 vite가 변환·alias
     // 적용하도록 inline → node 외부화 경로로 새는 두 번째 인스턴스 차단(단일 LocationContext).
-    server: { deps: { inline: ['react-router-dom', 'react-router'] } },
+    server: { deps: { inline: true } },
   },
 });
