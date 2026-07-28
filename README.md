@@ -1,2 +1,5 @@
+🇰🇷 [한국어](./README.ko.md)
+
 # sleepdebttracker
-수면 부채를 누적 계산하고, 주말 몰아자기 회복 플랜을 제시하는 수면 건강 관리 앱
+
+A sleep health management app that calculates cumulative sleep debt and presents a recovery plan for weekend sleep-ins.
