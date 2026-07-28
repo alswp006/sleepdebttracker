@@ -37,7 +37,6 @@ mockTds();
 mockAppsInToss();
 mockRouter();
 
-// @ts-expect-error — TDD red phase: src/pages/InputPage.tsx not implemented yet (Coder writes this next)
 const { default: InputPage } = await import("@/pages/InputPage");
 
 function futureISO(daysAhead: number): string {
