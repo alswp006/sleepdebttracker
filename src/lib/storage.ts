@@ -64,10 +64,7 @@ function computeSleepMinutes(bedTime: string, wakeTime: string): number {
 // Records (sdt.records.v1)
 // ============================================================================
 
-/**
- * AC-1 (F1-AC6): Recover from corrupted JSON by returning empty object
- * No console.error logging.
- */
+// AC-1 (F1-AC6): Recover from corrupted JSON by returning empty object
 export function getRecords(): Record<string, SleepRecord> {
   return safeGet<Record<string, SleepRecord>>(SDT_KEYS.records, {});
 }
